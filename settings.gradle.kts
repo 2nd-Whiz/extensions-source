@@ -53,6 +53,13 @@ File(rootDir, "lib-multisrc").eachDir { include("lib-multisrc:${it.name}") }
 fun loadAllIndividualExtensions() {
     File(rootDir, "src").eachDir { dir ->
         dir.eachDir { subdir ->
+            val buildFile = File(subdir, "build.gradle.kts")
+            if (buildFile.exists()) {
+                val content = buildFile.readText()
+                if (content.contains("ContentWarning.NSFW") || content.contains("isNsfw = true")) {
+                    return@eachDir
+                }
+            }
             include("src:${dir.name}:${subdir.name}")
         }
     }
